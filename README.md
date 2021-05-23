@@ -22,5 +22,5 @@ Major Steps:
     6.  Add a room/level system that allows for seperation of different areas of the game world (Make it so that the input format is easily modifiable (last time I did it through an image file but there must be a better way))
     
 
-    
-    And onwards, just keep expanding on it.
+
+And onwards, just keep expanding on it.
