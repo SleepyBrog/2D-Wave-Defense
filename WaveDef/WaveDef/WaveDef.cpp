@@ -1,21 +1,88 @@
-// WaveDef.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <stdio.h>
+#include <SFML/Graphics.hpp>
+#include "Entity.h"
+#include "Player.h"
 
 int main()
 {
-	printf("Hello \n");
-	getchar();
+	int ResX = sf::VideoMode::getDesktopMode().width;
+	int ResY = sf::VideoMode::getDesktopMode().height;
+	sf::RenderWindow window(sf::VideoMode(ResX, ResY), "SFML works!", sf::Style::None);
+	window.setFramerateLimit(60);
+	Player player;
+
+	//sf::CircleShape shape(100.f);
+	//shape.setFillColor(sf::Color::Green);
+	/*
+	int moveLeft = 0;
+	int moveRight = 0;
+	int moveUp = 0;
+	int moveDown = 0;
+	int moveSpeed = 8;
+	*/
+	while (window.isOpen())
+	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+		/*
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			moveLeft = 1;
+		}
+		else {
+			moveLeft = 0;
+		}
+			
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			moveRight = 1;
+		}
+		else {
+			moveRight = 0;		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			moveDown = 1;
+		}
+		else {
+			moveDown = 0;
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			moveUp = 1;
+		}
+		else {
+			moveUp = 0;
+		}
+
+		if (moveRight) {
+			shape.move(moveSpeed, 0);
+		}
+		else if (moveLeft) {
+			shape.move(-moveSpeed, 0);
+		}
+		if (moveDown) {
+			shape.move(0, moveSpeed);
+		}
+		else if (moveUp) {
+			shape.move(0, -moveSpeed);
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			moveSpeed = 20;
+		}
+		else {
+			moveSpeed = 8;
+		}
+		*/
+		player.Update();
+		window.clear();
+		window.draw(player.shape);
+		window.display();
+	}
+	return 0;
+
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
