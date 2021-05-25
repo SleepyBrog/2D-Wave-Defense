@@ -11,7 +11,7 @@ Major Steps:
 
     1.  Setup github repository and link it to VScode - DONE
 
-    2.  Setup classes for various entities in the game (player, enemies, etc.) and for the world collision objects
+    2.  Setup classes for various entities in the game (player, enemies, etc.) and for the world collision objects - IN PROGRESS
 
     3.  Setup a camera that will center on the player naturally
     
