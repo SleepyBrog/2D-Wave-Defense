@@ -1,12 +1,21 @@
 #include "Player.h"
 #include <SFML/Graphics.hpp>
+#define GRID_SIZE 32
 
-Player::Player() :Entity(20, 20, 64, 64, sf::Color::Blue) {
+Player::Player() :Entity(20, 20, GRID_SIZE, GRID_SIZE, sf::Color::Blue) {
 	moveLeft = 0;
 	moveRight = 0;
 	moveUp = 0;
 	moveDown = 0;
-	moveSpeed = 8;
+	topSpeed = 20;
+	accel = 0.5f;
+	velX = 0;
+	velY = 0;
+	nextX = 20;
+	nextY = 20;
+	prevX = 20;
+	prevY = 20;
+	speedMultiplier = 1;
 }
 
 void Player::CheckKeys() {
@@ -42,31 +51,86 @@ void Player::CheckKeys() {
 
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-		moveSpeed = 20;
+		speedMultiplier = 2;
 	}
 	else {
-		moveSpeed = 8;
+		speedMultiplier = 1;
 	}
 }
 
 void Player::Move() {
+	shape.setPosition(nextX, nextY);
 	if (moveRight) {
-		shape.move(moveSpeed, 0);
+		velX += accel*speedMultiplier;
 	}
 	else if (moveLeft) {
-		shape.move(-moveSpeed, 0);
+		velX -= accel*speedMultiplier;
+	}
+	else {
+		velX /= 1.1;
 	}
 	if (moveDown) {
-		shape.move(0, moveSpeed);
+		velY += accel*speedMultiplier;
 	}
 	else if (moveUp) {
-		shape.move(0, -moveSpeed);
+		velY -= accel*speedMultiplier;
 	}
+	else {
+		velY /= 1.1;
+	}
+	if (abs(velX) <= accel / 2) {
+		velX = 0;
+	}
+	if (abs(velY) <= accel / 2) {
+		velY = 0;
+	}
+	if (velX > topSpeed) {
+		velX = topSpeed;
+	}
+	else if (velX < -topSpeed) {
+		velX = -topSpeed;
+	}
+	if (velY > topSpeed) {
+		velY = topSpeed;
+	}
+	else if (velY < -topSpeed) {
+		velY = -topSpeed;
+	}
+	prevX = xPos;
+	prevY = yPos;
+	AlignPos();
+	nextX = xPos+velX;
+	nextY = yPos+velY;
 }
-void Player::Update() {
+void Player::Update(sf::RenderWindow &window) {
 	
 	CheckKeys();
 	Move();
+	window.draw(shape);
+	
+}
 
+void Player::PlatformCollisionCheck(Platform plat) {
+
+		AlignPos();
+		
+		if (prevY + height <= plat.yPos && nextY + height > plat.yPos && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
+			velY = 0;
+			nextY = plat.yPos - height;
+		}
+		else if (prevY >= plat.yPos + height && nextY < plat.yPos + plat.height && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
+			printf("%d %d \n", prevY, nextY);
+			velY = 0;
+			nextY = plat.yPos + plat.height;
+		}
+
+		if (prevX + width <= plat.xPos && nextX + width > plat.xPos && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
+			velX = 0;
+			nextX = plat.xPos - width;
+		}
+		else if (prevX >= plat.xPos + plat.width && nextX < plat.xPos + plat.width && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
+			velX = 0;
+			nextX = plat.xPos + plat.width;
+		}
 	
 }

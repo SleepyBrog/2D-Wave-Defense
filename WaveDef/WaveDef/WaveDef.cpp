@@ -2,6 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
 #include "Player.h"
+#include "Platform.h"
+
+using namespace std;
 
 int main()
 {
@@ -10,16 +13,9 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(ResX, ResY), "SFML works!", sf::Style::None);
 	window.setFramerateLimit(60);
 	Player player;
-
-	//sf::CircleShape shape(100.f);
-	//shape.setFillColor(sf::Color::Green);
-	/*
-	int moveLeft = 0;
-	int moveRight = 0;
-	int moveUp = 0;
-	int moveDown = 0;
-	int moveSpeed = 8;
-	*/
+	vector <Platform> walls;
+	Platform wall(400, 400, 64, 64, 1);
+	walls.push_back(wall);
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -28,59 +24,11 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-		/*
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		{
-			moveLeft = 1;
-		}
-		else {
-			moveLeft = 0;
-		}
-			
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			moveRight = 1;
-		}
-		else {
-			moveRight = 0;		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			moveDown = 1;
-		}
-		else {
-			moveDown = 0;
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-			moveUp = 1;
-		}
-		else {
-			moveUp = 0;
-		}
-
-		if (moveRight) {
-			shape.move(moveSpeed, 0);
-		}
-		else if (moveLeft) {
-			shape.move(-moveSpeed, 0);
-		}
-		if (moveDown) {
-			shape.move(0, moveSpeed);
-		}
-		else if (moveUp) {
-			shape.move(0, -moveSpeed);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-			moveSpeed = 20;
-		}
-		else {
-			moveSpeed = 8;
-		}
-		*/
-		player.Update();
 		window.clear();
-		window.draw(player.shape);
+		player.Update(window);
+		window.draw(wall.shape);
+		player.PlatformCollisionCheck(wall);
 		window.display();
 	}
 	return 0;

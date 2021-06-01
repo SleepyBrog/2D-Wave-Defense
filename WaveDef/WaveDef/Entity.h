@@ -1,12 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#define GRID_SIZE 32
 
 class Entity
 {
-	int width, height, xPos, yPos;
 	sf::Color color;
 public:
+	float width, height, xPos, yPos;
+	int needsToDie;
 	sf::RectangleShape shape;
-	Entity(int, int, int, int, sf::Color);
+	Entity(int, int, float, float, sf::Color);
+	void AlignPos(void);
 };
 
