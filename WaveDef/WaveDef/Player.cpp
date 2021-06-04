@@ -76,7 +76,7 @@ void Player::Move() {
 		velY -= accel*speedMultiplier;
 	}
 	else {
-		velY /= 1.1;
+		velY /= 1.5;
 	}
 	if (abs(velX) <= accel / 2) {
 		velX = 0;
@@ -114,12 +114,13 @@ void Player::PlatformCollisionCheck(Platform plat) {
 
 		AlignPos();
 		
+
+		
 		if (prevY + height <= plat.yPos && nextY + height > plat.yPos && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
 			velY = 0;
 			nextY = plat.yPos - height;
 		}
 		else if (prevY >= plat.yPos + height && nextY < plat.yPos + plat.height && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
-			printf("%d %d \n", prevY, nextY);
 			velY = 0;
 			nextY = plat.yPos + plat.height;
 		}

@@ -12,8 +12,11 @@ Major Steps:
     1.  Setup github repository and link it to VScode - DONE
 
     2.  Setup classes for various entities in the game (player, enemies, etc.) and for the world collision objects - IN PROGRESS
+		2.a) Setup a test environment, like a hardcoded level that I can use to check things as we move along.
+		2.b) Go back and document everything I've done with comments, alot of this is messy
 
-    3.  Setup a camera that will center on the player naturally
+    3.  Setup a camera that will center on the player naturally 
+			(wouldn't this just be a part of the player class? A method to center the viewport while checking level boundaries? Technically falls under #2)
     
     4.  Setup classes that will allow for more interaction than just physical obstacles and enemies (attacks, context sensitive objects, etc)
     

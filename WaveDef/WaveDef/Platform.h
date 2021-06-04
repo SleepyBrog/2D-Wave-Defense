@@ -4,7 +4,7 @@ class Platform :
 	public Entity
 {
 public:
-	int solid;
+	int passthrough;
 	Platform(int, int, float, float, int);
 };
 
