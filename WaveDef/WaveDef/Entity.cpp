@@ -6,7 +6,7 @@ Entity::Entity(int xPos, int yPos, float w, float h, sf::Color color) {
 	shape.setFillColor(color);
 	width = w;
 	height = h;
-	needsToDie = 0;
+	isAlive = 1;
 	AlignPos();
 }
 

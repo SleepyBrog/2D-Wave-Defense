@@ -1,5 +1,9 @@
 #pragma once
 #include "Entity.h"
+
+class Player;
+class Enemy;
+
 class Platform :
 	public Entity
 {

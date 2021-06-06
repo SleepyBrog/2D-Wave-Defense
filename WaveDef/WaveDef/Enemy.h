@@ -1,18 +1,18 @@
 #pragma once
 #include "Entity.h"
 #include "Platform.h"
-#include "Player.h"
+class Player;
 
 class Enemy :
 	public Entity
 {
-	float accel, topSpeed, velX, velY, nextX, nextY, speedMultiplier, prevX, prevY, topXSpeed, topXAccel, topYSpeed, topYAccel;
-	Entity * focus;
+	float accel, topSpeed, nextX, nextY, speedMultiplier, prevX, prevY, topXSpeed, topYSpeed, maxHealth, currentHealth;
+	Player * focus;
 public:
+	float velX, velY, attackDamage;
 	Enemy(int, int, float, float, float, float, Player *target);
 	void Update(sf::RenderWindow &window);
 	void Move();
 	void PlatformCollisionCheck(Platform);
-	void PlayerCollisionCheck(Player &player);
 };
 
