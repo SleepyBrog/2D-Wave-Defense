@@ -1,6 +1,10 @@
 #include "Player.h"
+#include "Platform.h"
+#include "Enemy.h"
 #include <SFML/Graphics.hpp>
-#define GRID_SIZE 32
+#include <time.h>
+
+#define INVUL_TIME 1
 
 Player::Player() :Entity(20, 20, GRID_SIZE, GRID_SIZE, sf::Color::Blue) {
 	moveLeft = 0;
@@ -16,6 +20,9 @@ Player::Player() :Entity(20, 20, GRID_SIZE, GRID_SIZE, sf::Color::Blue) {
 	prevX = 20;
 	prevY = 20;
 	speedMultiplier = 1;
+	maxHealth = currentHealth = 100;
+	hitInvulnerable = 0;
+	invulStartTime = clock();
 }
 
 void Player::CheckKeys() {
@@ -50,6 +57,7 @@ void Player::CheckKeys() {
 	}
 
 
+	// Speed up acceleration - change this into a sort of dash, maybe higher topspeed as well?
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
 		speedMultiplier = 2;
 	}
@@ -60,6 +68,7 @@ void Player::CheckKeys() {
 
 void Player::Move() {
 	shape.setPosition(nextX, nextY);
+
 	if (moveRight) {
 		velX += accel*speedMultiplier;
 	}
@@ -67,7 +76,8 @@ void Player::Move() {
 		velX -= accel*speedMultiplier;
 	}
 	else {
-		velX /= 1.1;
+		velX /= 1.04;
+		//Just slowdown generally if nothing is pressed
 	}
 	if (moveDown) {
 		velY += accel*speedMultiplier;
@@ -76,14 +86,19 @@ void Player::Move() {
 		velY -= accel*speedMultiplier;
 	}
 	else {
-		velY /= 1.5;
+		velY /= 1.04;
+		//Just slowdown generally if nothing is pressed
 	}
+
+	// Stop moving if velecity is close enough to zero - can't think of a way to have a player be precise enough to go to zero velocity otherwise
 	if (abs(velX) <= accel / 2) {
 		velX = 0;
 	}
 	if (abs(velY) <= accel / 2) {
 		velY = 0;
 	}
+
+	// Cap movement speed
 	if (velX > topSpeed) {
 		velX = topSpeed;
 	}
@@ -96,26 +111,19 @@ void Player::Move() {
 	else if (velY < -topSpeed) {
 		velY = -topSpeed;
 	}
+
+	// Next/Prev Pos systems are to make world collision more accurate - otherwise it'd be easy to phase into / pass through walls
 	prevX = xPos;
 	prevY = yPos;
 	AlignPos();
 	nextX = xPos+velX;
 	nextY = yPos+velY;
 }
-void Player::Update(sf::RenderWindow &window) {
-	
-	CheckKeys();
-	Move();
-	window.draw(shape);
-	
-}
-
 void Player::PlatformCollisionCheck(Platform plat) {
 
-		AlignPos();
-		
+			// Check if player is going to collide with wall, and then make his next postion outside of wall instead of inside, incase they are.
+			// Didn't use built in function for this bc it didn't return where the collision was taking place, as well as the fact that I couldn't find a way to implement preemptive collisions with it
 
-		
 		if (prevY + height <= plat.yPos && nextY + height > plat.yPos && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
 			velY = 0;
 			nextY = plat.yPos - height;
@@ -134,4 +142,46 @@ void Player::PlatformCollisionCheck(Platform plat) {
 			nextX = plat.xPos + plat.width;
 		}
 	
+}
+
+void Player::EnemyCollisionCheck(Enemy enemy) {
+
+	if (shape.getGlobalBounds().intersects(enemy.shape.getGlobalBounds()) && !hitInvulnerable) {
+		currentHealth -= enemy.attackDamage;
+		invulStartTime = clock();
+		printf("ye");
+
+		// Trying out knockback - this is probably going to get revised
+		float tempVelX = velX;
+		float tempVelY = velY;
+		velX += 4 * enemy.velX;
+		velY += 4 * enemy.velY;
+		enemy.velX += 4 * tempVelX;
+		enemy.velY += 4 * tempVelY;
+	}
+}
+
+void Player::NeedsToDie(void) {
+	// Will be useful for more common things like enemies - just run a vector of them thorugh a for loop and if any of them are dead remove them
+	if (currentHealth <= 0) {
+		isAlive = 0;
+	}
+}
+
+void Player::CheckInvul(void) {
+	if ((clock() - invulStartTime) / CLOCKS_PER_SEC <= INVUL_TIME) {
+		hitInvulnerable = 1;
+	}
+	else {
+		hitInvulnerable = 0;
+	}
+}
+
+void Player::Update(sf::RenderWindow &window) {
+
+	CheckKeys();
+	Move();
+	CheckInvul();
+	NeedsToDie();
+	window.draw(shape);
 }
