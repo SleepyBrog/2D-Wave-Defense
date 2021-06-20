@@ -13,21 +13,26 @@ using namespace std;
 // Planning on setting up better solutions like entity vectors and general functions
 
 Player player;
-vector <Platform> walls;
+vector<Platform> walls;
+vector<Enemy> enemies;
 Platform wall(400, 400, 64, 64, 1);
 Enemy enemy(900, 500, 50, 50, 5, 0.2, &player);
+
 
 //	Added function to centre the viewport
 void centerViewport(sf::View view, sf::RenderWindow &window, Entity target);
 
 int main()
 {
+
+	walls.push_back(wall);
+	enemies.push_back(enemy);
+
 	int ResX = sf::VideoMode::getDesktopMode().width;
 	int ResY = sf::VideoMode::getDesktopMode().height;
-	sf::RenderWindow window(sf::VideoMode(ResX, ResY), "SFML works!", sf::Style::None);
+	sf::RenderWindow window(sf::VideoMode(ResX, ResY), "2D Wave Defense", sf::Style::None);
 	sf::View view = window.getView();
 	window.setFramerateLimit(60);
-	walls.push_back(wall);
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -39,11 +44,13 @@ int main()
 
 		window.clear();
 		player.Update(window);
-		enemy.Update(window);
+		for (Enemy& enemy : enemies) {
+			enemy.Update(window);
+			enemy.PlatformCollisionCheck(walls);
+		}
 		window.draw(wall.shape);
-		player.PlatformCollisionCheck(wall);
-		player.EnemyCollisionCheck(enemy);
-		enemy.PlatformCollisionCheck(wall);
+		player.PlatformCollisionCheck(walls);
+		player.EnemyCollisionCheck(enemies);
 		centerViewport(view, window, player);
 		window.display();
 

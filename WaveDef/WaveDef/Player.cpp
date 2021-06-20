@@ -119,45 +119,46 @@ void Player::Move() {
 	nextX = xPos+velX;
 	nextY = yPos+velY;
 }
-void Player::PlatformCollisionCheck(Platform plat) {
+void Player::PlatformCollisionCheck(std::vector<Platform> &plats) {
 
 			// Check if player is going to collide with wall, and then make his next postion outside of wall instead of inside, incase they are.
 			// Didn't use built in function for this bc it didn't return where the collision was taking place, as well as the fact that I couldn't find a way to implement preemptive collisions with it
+	for (Platform plat : plats) {
 
-	if (prevY + height <= plat.yPos && nextY + height > plat.yPos && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
-		velY = 0;
-		nextY = plat.yPos - height;
-	}
-	else if (prevY >= plat.yPos + height && nextY < plat.yPos + plat.height && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
-		velY = 0;
-		nextY = plat.yPos + plat.height;
-	}
+		if (prevY + height <= plat.yPos && nextY + height > plat.yPos && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
+			velY = 0;
+			nextY = plat.yPos - height;
+		}
+		else if (prevY >= plat.yPos + height && nextY < plat.yPos + plat.height && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
+			velY = 0;
+			nextY = plat.yPos + plat.height;
+		}
 
-	if (prevX + width <= plat.xPos && nextX + width > plat.xPos && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
-		velX = 0;
-		nextX = plat.xPos - width;
-	}
-	else if (prevX >= plat.xPos + plat.width && nextX < plat.xPos + plat.width && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
-		velX = 0;
-		nextX = plat.xPos + plat.width;
+		if (prevX + width <= plat.xPos && nextX + width > plat.xPos && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
+			velX = 0;
+			nextX = plat.xPos - width;
+		}
+		else if (prevX >= plat.xPos + plat.width && nextX < plat.xPos + plat.width && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
+			velX = 0;
+			nextX = plat.xPos + plat.width;
+		}
 	}
 
 }
 
-void Player::EnemyCollisionCheck(Enemy enemy) {
-
-	if (shape.getGlobalBounds().intersects(enemy.shape.getGlobalBounds()) && !hitInvulnerable) {
-		currentHealth -= enemy.attackDamage;
-		invulStartTime = clock();
-		printf("ye");
-
-		// Trying out knockback - this is probably going to get revised
-		float tempVelX = velX;
-		float tempVelY = velY;
-		velX += 4 * enemy.velX;
-		velY += 4 * enemy.velY;
-		enemy.velX += 4 * tempVelX;
-		enemy.velY += 4 * tempVelY;
+void Player::EnemyCollisionCheck(std::vector<Enemy> &enemies) {
+	for (Enemy enemy : enemies) {
+			if(shape.getGlobalBounds().intersects(enemy.shape.getGlobalBounds()) && !hitInvulnerable) {
+				currentHealth -= enemy.attackDamage;
+				invulStartTime = clock();
+			// Trying out knockback - this is probably going to get revised
+			float tempVelX = velX;
+			float tempVelY = velY;
+			velX += 4 * enemy.velX;
+			velY += 4 * enemy.velY;
+			enemy.velX += 4 * tempVelX;
+			enemy.velY += 4 * tempVelY;
+		}
 	}
 }
 

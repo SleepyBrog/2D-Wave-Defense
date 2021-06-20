@@ -13,6 +13,6 @@ public:
 	Enemy(int, int, float, float, float, float, Player *target);
 	void Update(sf::RenderWindow &window);
 	void Move();
-	void PlatformCollisionCheck(Platform);
+	void PlatformCollisionCheck(std::vector<Platform> &plats);
 };
 

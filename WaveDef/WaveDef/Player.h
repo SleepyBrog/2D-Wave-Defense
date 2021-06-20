@@ -14,8 +14,8 @@ public:
 	void Update(sf::RenderWindow &window);
 	void CheckKeys();
 	void Move();
-	void PlatformCollisionCheck(Platform);
-	void EnemyCollisionCheck(Enemy);
+	void PlatformCollisionCheck(std::vector<Platform> &plats);
+	void EnemyCollisionCheck(std::vector<Enemy> &enemies);
 	void NeedsToDie(void);
 	void CheckInvul(void);
 };
