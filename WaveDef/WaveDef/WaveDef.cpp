@@ -17,11 +17,15 @@ vector <Platform> walls;
 Platform wall(400, 400, 64, 64, 1);
 Enemy enemy(900, 500, 50, 50, 5, 0.2, &player);
 
+//	Added function to centre the viewport
+void centerViewport(sf::View view, sf::RenderWindow &window, Entity target);
+
 int main()
 {
 	int ResX = sf::VideoMode::getDesktopMode().width;
 	int ResY = sf::VideoMode::getDesktopMode().height;
 	sf::RenderWindow window(sf::VideoMode(ResX, ResY), "SFML works!", sf::Style::None);
+	sf::View view = window.getView();
 	window.setFramerateLimit(60);
 	walls.push_back(wall);
 	while (window.isOpen())
@@ -40,6 +44,7 @@ int main()
 		player.PlatformCollisionCheck(wall);
 		player.EnemyCollisionCheck(enemy);
 		enemy.PlatformCollisionCheck(wall);
+		centerViewport(view, window, player);
 		window.display();
 
 		if (!player.isAlive) {
@@ -48,4 +53,9 @@ int main()
 	}
 	return 0;
 
+}
+
+void centerViewport(sf::View view, sf::RenderWindow &window, Entity target) {
+	view.setCenter(target.xPos, target.yPos);
+	window.setView(view);
 }
