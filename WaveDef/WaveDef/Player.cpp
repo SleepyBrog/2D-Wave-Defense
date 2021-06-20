@@ -129,18 +129,20 @@ void Player::PlatformCollisionCheck(std::vector<Platform> &plats) {
 			velY = 0;
 			nextY = plat.yPos - height;
 		}
-		else if (prevY >= plat.yPos + height && nextY < plat.yPos + plat.height && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
-			velY = 0;
-			nextY = plat.yPos + plat.height;
-		}
 
-		if (prevX + width <= plat.xPos && nextX + width > plat.xPos && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
+		else if (prevX + width <= plat.xPos && nextX + width > plat.xPos && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
 			velX = 0;
 			nextX = plat.xPos - width;
 		}
 		else if (prevX >= plat.xPos + plat.width && nextX < plat.xPos + plat.width && nextY < plat.yPos + plat.height && nextY + height > plat.yPos) {
 			velX = 0;
 			nextX = plat.xPos + plat.width;
+		}
+
+
+		else if (prevY >= plat.yPos + height && nextY < plat.yPos + plat.height && nextX < plat.xPos + plat.width && nextX + width > plat.xPos) {
+			velY = 0;
+			nextY = plat.yPos + plat.height;
 		}
 	}
 
